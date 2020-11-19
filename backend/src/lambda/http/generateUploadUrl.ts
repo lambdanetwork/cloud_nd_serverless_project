@@ -3,10 +3,15 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import * as AWSXRay from 'aws-xray-sdk'
 import * as AWS from 'aws-sdk'
+import { createLogger } from '../../utils/logger'
 
 const XAWS = AWSXRay.captureAWS(AWS)
+const logger = createLogger('generate signed url ');
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  try {
+
+  
   const todoId = event.pathParameters.todoId
 
   if (!todoId) {
@@ -16,6 +21,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
   }
 
+  logger.info(`try ting to get upload url`)
   const url = getUploadUrl(todoId)
 
   return {
@@ -23,6 +29,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     body: JSON.stringify({
       uploadUrl: url
     })
+  }
+  } catch(err){
+    logger.error('failed to get signed url', err)
   }
 }
 

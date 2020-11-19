@@ -1,9 +1,12 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-import * as AWS from 'aws-sdk';
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { v4 as uuidv4 } from 'uuid';
+import * as AWS from 'aws-sdk'
+import { createLogger } from '../../utils/logger'
+
+const logger = createLogger('create todo');
 
 AWS.config.update({region: 'ap-southeast-1'});
 
@@ -33,6 +36,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
          todoId: uuidv4()
       }
     };
+
+    logger.info(
+      `Creating item with params ${params}`
+    )
     const item = await ddbDocumentClient.put(params).promise();
 
     return {
@@ -42,6 +49,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       }
     }
   } catch(err){
-    console.error(err)
+    logger.error(`fail to create item`, err)
   }
 }
