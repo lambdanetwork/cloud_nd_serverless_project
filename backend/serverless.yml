@@ -24,6 +24,8 @@ provider:
       CREATED_AT_INDEX: CreatedAtIndex
       TODO_IMAGES_S3_BUCKET: todo-serverless-cloud-nd
       SIGNED_URL_EXPIRATION: 300
+      REGION: ${opt:region, 'ap-southeast-1'}
+
 
 custom:
   documentation:
