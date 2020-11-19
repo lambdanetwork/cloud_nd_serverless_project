@@ -36,5 +36,3 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     console.error(err)
   }
 }
-
-handler(null,null,null)
