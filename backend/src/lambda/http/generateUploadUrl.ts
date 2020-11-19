@@ -10,9 +10,13 @@ const logger = createLogger('generate signed url ');
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
+    let todoId: string;
 
-  
-  const todoId = event.pathParameters.todoId
+  if(!event){
+    todoId = 'd08f3a13-4b7d-429d-9a81-04f3115d6912'
+  } else {
+    todoId = event.pathParameters.todoId 
+  }
 
   if (!todoId) {
     return {
@@ -21,9 +25,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
   }
 
-  logger.info(`try ting to get upload url`)
+  logger.info(`trying to get upload url`)
   const url = getUploadUrl(todoId)
-
+  console.log(url)
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -31,14 +35,20 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     })
   }
   } catch(err){
+    console.error(err)
     logger.error('failed to get signed url', err)
   }
 }
 
 const s3 = new XAWS.S3({
-  signatureVersion: 'v4'
-})
+  signatureVersion: 'v4',
+  region: process.env.REGION,
+});
 
+// const s3 = new AWS.S3({ 
+//   signatureVersion: 'v4', 
+//   region: process.env.REGION,
+// })
 const bucketName = process.env.TODO_IMAGES_S3_BUCKET
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
@@ -46,6 +56,10 @@ function getUploadUrl(todoId: string) {
   return s3.getSignedUrl('putObject', {
     Bucket: bucketName,
     Key: todoId,
-    Expires: urlExpiration
+    Expires: urlExpiration,
   })
 }
+
+
+// REGION=ap-southeast-1 TODO_IMAGES_S3_BUCKET=todo-serverless-cloud-nd SIGNED_URL_EXPIRATION=300 ts-node src/lambda/http/generateUploadUrl.ts
+// handler(null, null, null)
