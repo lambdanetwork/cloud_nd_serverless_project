@@ -4,6 +4,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import * as AWS from 'aws-sdk';
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import { getUserId } from '../utils';
 
 AWS.config.update({region: 'ap-southeast-1'});
 const ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
@@ -22,7 +23,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     let updatedTodo: UpdateTodoRequest;
 
     if(event){
-      userId = event.pathParameters.userId;
+      userId = getUserId(event);
       todoId = event.pathParameters.todoId;
       updatedTodo = JSON.parse(event.body);
     } else {
