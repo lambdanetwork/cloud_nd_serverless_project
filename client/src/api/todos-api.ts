@@ -13,8 +13,7 @@ export async function getTodos(idToken: string): Promise<Todo[]> {
       'Authorization': `Bearer ${idToken}`
     },
   })
-  console.log('Todos:', response.data)
-  return response.data.items
+  return response.data.Items
 }
 
 export async function createTodo(
@@ -24,10 +23,10 @@ export async function createTodo(
   const response = await Axios.post(`${apiEndpoint}/todos`,  JSON.stringify(newTodo), {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`
+      'Authorization': `Bearer ${idToken}`,
     }
   })
-  return response.data.item
+  return response.data
 }
 
 export async function patchTodo(
@@ -64,7 +63,8 @@ export async function getUploadUrl(
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     }
-  })
+  });
+  console.log(response.data.uploadUrl)
   return response.data.uploadUrl
 }
 
