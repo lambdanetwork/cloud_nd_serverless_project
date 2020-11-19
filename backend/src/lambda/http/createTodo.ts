@@ -5,6 +5,7 @@ import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { v4 as uuidv4 } from 'uuid';
 import * as AWS from 'aws-sdk'
 import { createLogger } from '../../utils/logger'
+import { getUserId } from '../utils';
 
 const logger = createLogger('create todo');
 
@@ -27,24 +28,28 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     } else {
       newTodo = defaultTodo()
     }
-    
+
+    const todoObj = {
+      ...newTodo, 
+      userId: getUserId(event),
+      todoId: uuidv4()
+    }
     const params = {
       TableName: process.env.TODOS_TABLE,
       Item:{
-         ...newTodo,
-         userId: uuidv4(),
-         todoId: uuidv4()
+         ...todoObj,
       }
     };
 
     logger.info(
       `Creating item with params ${params}`
     )
-    const item = await ddbDocumentClient.put(params).promise();
+    
+    await ddbDocumentClient.put(params).promise();
 
     return {
       statusCode: 200,
-      body: JSON.stringify(item),
+      body: JSON.stringify(todoObj),
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true,
