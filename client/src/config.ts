@@ -1,5 +1,5 @@
 const apiId = '21wuod5dfc'
-export const apiEndpoint = `https://${apiId}.execute-api.ap-southeast-1.amazonaws.com/dev/todos`
+export const apiEndpoint = `https://${apiId}.execute-api.ap-southeast-1.amazonaws.com/dev`
 
 export const authConfig = {
   domain: 'vidy-cloud-nd.au.auth0.com',            // Auth0 domain

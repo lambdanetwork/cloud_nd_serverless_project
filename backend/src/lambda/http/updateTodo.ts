@@ -58,6 +58,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       statusCode: 200,
       body: JSON.stringify(item),
       headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       }
     }
   } catch(err){

@@ -34,7 +34,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   
     return {
       statusCode: 200,
-      body: null
+      body: null,
+      headers:{
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      }
     }
   } catch(err){
     logger.error(err)
