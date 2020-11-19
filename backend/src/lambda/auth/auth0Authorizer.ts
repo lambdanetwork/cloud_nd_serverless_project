@@ -1,9 +1,8 @@
 import { CustomAuthorizerEvent, CustomAuthorizerResult } from 'aws-lambda'
 import 'source-map-support/register'
 
-import {   verify } from 'jsonwebtoken'
+import { verify } from 'jsonwebtoken'
 import { createLogger } from '../../utils/logger'
-// import Axios from 'axios'
 import { JwtPayload } from '../../auth/JwtPayload'
 import Axios from 'axios'
 
@@ -62,7 +61,7 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const pemData = res['data']['keys'][0]['x5c'][0]
   const cert = `-----BEGIN CERTIFICATE-----\n${pemData}\n-----END CERTIFICATE-----`
 
-  return verify(token, cert, { algorithms: ['HS256'] }) as JwtPayload
+  return verify(token, cert, { algorithms: ['RS256'] }) as JwtPayload
 }
 
 function getToken(authHeader: string): string {
