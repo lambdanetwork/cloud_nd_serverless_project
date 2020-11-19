@@ -8,19 +8,20 @@ const ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    let todoId: string;
+    let todoId: string, userId: string;
     if(event){
       todoId = event.pathParameters.todoId
+      userId = event.pathParameters.userId
     } else {
       todoId = "123"
+      userId = "user123"
     }
 
 
     const params = {
       TableName: process.env.TODOS_TABLE,
       Key:{
-        todoId,
-        createdAt: '2019-07-27T20:01:45.424Z'
+        todoId, userId,
       }
     };
 
@@ -36,3 +37,4 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   }
 }
 
+handler(null,null,null)

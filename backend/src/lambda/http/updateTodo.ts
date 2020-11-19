@@ -18,21 +18,24 @@ const defaultTodo = () => {
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    let todoId;
+    let todoId, userId;
     let updatedTodo: UpdateTodoRequest;
 
     if(event){
+      userId = event.pathParameters.userId;
       todoId = event.pathParameters.todoId;
       updatedTodo = JSON.parse(event.body);
     } else {
-      todoId = "123",
-      updatedTodo = defaultTodo()
+      userId = "user123";
+      todoId = "123";
+      updatedTodo = defaultTodo();
     }
 
     const params: DocumentClient.UpdateItemInput = {
       TableName: process.env.TODOS_TABLE,
       Key:{
-        "todoId": todoId
+        todoId,
+        userId
       },
       UpdateExpression:
         'set #name = :name, #dueDate = :duedate, #done = :done',
@@ -60,6 +63,3 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     console.error(err)
   }
 }
-
-
-

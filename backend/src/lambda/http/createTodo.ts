@@ -29,6 +29,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       TableName: process.env.TODOS_TABLE,
       Item:{
          ...newTodo,
+         userId: uuidv4(),
          todoId: uuidv4()
       }
     };
@@ -44,6 +45,3 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     console.error(err)
   }
 }
-
-
-
