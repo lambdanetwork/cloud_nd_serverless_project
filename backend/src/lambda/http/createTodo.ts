@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 AWS.config.update({region: 'ap-southeast-1'});
 
-const tableName = 'cloud-nd-todo';
 const ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
 
 const defaultTodo = () => {
@@ -27,7 +26,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
     
     const params = {
-      TableName:tableName,
+      TableName: process.env.TODOS_TABLE,
       Item:{
          ...newTodo,
          todoId: uuidv4()

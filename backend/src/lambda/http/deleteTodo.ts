@@ -4,7 +4,6 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 import * as AWS from 'aws-sdk';
 AWS.config.update({region: 'ap-southeast-1'});
 
-const tableName = 'cloud-nd-todo';
 const ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -18,7 +17,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
 
     const params = {
-      TableName:tableName,
+      TableName: process.env.TODOS_TABLE,
       Key:{
         todoId,
         createdAt: '2019-07-27T20:01:45.424Z'

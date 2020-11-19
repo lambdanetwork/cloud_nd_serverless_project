@@ -6,8 +6,6 @@ import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 AWS.config.update({region: 'ap-southeast-1'});
-
-const tableName = 'cloud-nd-todo';
 const ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
 
 const defaultTodo = () => {
@@ -32,7 +30,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
 
     const params: DocumentClient.UpdateItemInput = {
-      TableName:tableName,
+      TableName: process.env.TODOS_TABLE,
       Key:{
         "todoId": todoId
       },

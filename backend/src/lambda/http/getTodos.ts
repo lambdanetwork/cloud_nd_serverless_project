@@ -4,16 +4,14 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 import * as AWS from 'aws-sdk';
 AWS.config.update({region: 'ap-southeast-1'});
 
-const tableName = 'cloud-nd-todo';
 const ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
 
 export const handler: APIGatewayProxyHandler = async (_: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     const params = {
-        TableName: tableName
+      TableName: process.env.TODOS_TABLE,
     };
-    var result = await ddbDocumentClient.scan(params).promise()
-    console.log(JSON.stringify(result))
+    const result = await ddbDocumentClient.scan(params).promise()
 
     return {
       statusCode: 200,
