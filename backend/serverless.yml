@@ -13,17 +13,32 @@ provider:
     lambda: true
     ApiGateway: true
 
-  name: aws
-  runtime: nodejs12.x
+    name: aws
+    runtime: nodejs12.x
 
-  stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'ap-southeast-1'}
+    stage: ${opt:stage, 'dev'}
+    region: ${opt:region, 'ap-southeast-1'}
 
-  environment:
-    TODOS_TABLE: cloud-nd-todo
-    CREATED_AT_INDEX: CreatedAtIndex
-    TODO_IMAGES_S3_BUCKET: todo-serverless-cloud-nd
-    SIGNED_URL_EXPIRATION: 300
+    environment:
+      TODOS_TABLE: cloud-nd-todo
+      CREATED_AT_INDEX: CreatedAtIndex
+      TODO_IMAGES_S3_BUCKET: todo-serverless-cloud-nd
+      SIGNED_URL_EXPIRATION: 300
+
+custom:
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Todo API
+        description: Serverless application for todo list
+    models:
+      - name: CreateRequest
+        contentType: application/json
+        schema: ${file(validators/create-request.json)}
+      - name: UpdateRequest
+        contentType: application/json
+        schema: ${file(validators/update-request.json)}
 
 functions:
 
@@ -168,3 +183,6 @@ resources:
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.TODO_IMAGES_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
+
+
+
