@@ -27,15 +27,17 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   logger.info(`trying to get upload url`)
   const url = getUploadUrl(todoId)
-  console.log(url)
   return {
     statusCode: 200,
     body: JSON.stringify({
       uploadUrl: url
-    })
+    }),
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+    }
   }
   } catch(err){
-    console.error(err)
     logger.error('failed to get signed url', err)
   }
 }
