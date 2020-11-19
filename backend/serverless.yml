@@ -22,7 +22,7 @@ provider:
   environment:
     TODOS_TABLE: cloud-nd-todo
     CREATED_AT_INDEX: CreatedAtIndex
-    TODO_IMAGES_S3_BUCKET: 
+    TODO_IMAGES_S3_BUCKET: todo-serverless-cloud-nd
     SIGNED_URL_EXPIRATION: 300
 
 functions:
