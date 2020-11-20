@@ -9,28 +9,15 @@ import { getUserId } from '../utils';
 AWS.config.update({region: 'ap-southeast-1'});
 const ddbDocumentClient = new AWS.DynamoDB.DocumentClient();
 
-const defaultTodo = () => {
-  return {
-    dueDate: new Date(Date.now() + 24 * 60 *60 * 1000).toString(),
-    name: 'test task',
-    done: false
-  }
-}
-
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     let todoId, userId;
     let updatedTodo: UpdateTodoRequest;
-
     if(event){
       userId = getUserId(event);
       todoId = event.pathParameters.todoId;
       updatedTodo = JSON.parse(event.body);
-    } else {
-      userId = "user123";
-      todoId = "123";
-      updatedTodo = defaultTodo();
-    }
+    } 
 
     const params: DocumentClient.UpdateItemInput = {
       TableName: process.env.TODOS_TABLE,

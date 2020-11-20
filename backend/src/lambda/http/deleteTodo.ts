@@ -12,15 +12,10 @@ const logger = createLogger('delete todo');
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent, context): Promise<APIGatewayProxyResult> => {
   try {
     let todoId: string, userId: string;
-    if(event){
-      logger.info('context', context);
-      todoId = event.pathParameters.todoId
-      userId = getUserId(event);
-    } else {
-      todoId = "123"
-      userId = "user123"
-    }
-
+    
+    logger.info('context', context);
+    todoId = event.pathParameters.todoId
+    userId = getUserId(event);
 
     const params = {
       TableName: process.env.TODOS_TABLE,
