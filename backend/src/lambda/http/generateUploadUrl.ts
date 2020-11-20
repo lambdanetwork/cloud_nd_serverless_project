@@ -1,61 +1,39 @@
 import 'source-map-support/register'
 
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
-import * as AWSXRay from 'aws-xray-sdk'
-import * as AWS from 'aws-sdk'
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  APIGatewayProxyHandler
+} from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
+import { TodoBusinessLayer } from '../../businessLayer/todoBusinesLayer'
 
-const XAWS = AWSXRay.captureAWS(AWS)
-const logger = createLogger('generate signed url ');
+const logger = createLogger('generate signed url ')
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler: APIGatewayProxyHandler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   try {
-    const todoId = event.pathParameters.todoId 
+    const todoId = event.pathParameters.todoId
+    if (!todoId) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing todoId' })
+      }
+    }
 
-  if (!todoId) {
+    const url = TodoBusinessLayer.generateUploadUrl(event, logger)
     return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Missing todoId' })
+      statusCode: 200,
+      body: JSON.stringify({
+        uploadUrl: url
+      }),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      }
     }
-  }
-
-  logger.info(`trying to get upload url`)
-  const url = getUploadUrl(todoId)
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      uploadUrl: url
-    }),
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true,
-    }
-  }
-  } catch(err){
+  } catch (err) {
     logger.error('failed to get signed url', err)
   }
 }
-
-const s3 = new XAWS.S3({
-  signatureVersion: 'v4',
-  region: process.env.REGION,
-});
-
-// const s3 = new AWS.S3({ 
-//   signatureVersion: 'v4', 
-//   region: process.env.REGION,
-// })
-const bucketName = process.env.TODO_IMAGES_S3_BUCKET
-const urlExpiration = process.env.SIGNED_URL_EXPIRATION
-
-function getUploadUrl(todoId: string) {
-  return s3.getSignedUrl('putObject', {
-    Bucket: bucketName,
-    Key: todoId,
-    Expires: urlExpiration,
-  })
-}
-
-
-// REGION=ap-southeast-1 TODO_IMAGES_S3_BUCKET=todo-serverless-cloud-nd SIGNED_URL_EXPIRATION=300 ts-node src/lambda/http/generateUploadUrl.ts
-// handler(null, null, null)
