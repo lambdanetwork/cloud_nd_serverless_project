@@ -10,13 +10,7 @@ const logger = createLogger('generate signed url ');
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    let todoId: string;
-
-  if(!event){
-    todoId = 'd08f3a13-4b7d-429d-9a81-04f3115d6912'
-  } else {
-    todoId = event.pathParameters.todoId 
-  }
+    const todoId = event.pathParameters.todoId 
 
   if (!todoId) {
     return {

@@ -28,12 +28,17 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     } else {
       newTodo = defaultTodo()
     }
-
+    
+    const bucketName = process.env.TODO_IMAGES_S3_BUCKET;
+    const todoId = uuidv4();
     const todoObj = {
       ...newTodo, 
       userId: getUserId(event),
-      todoId: uuidv4()
+      todoId,
+      attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${todoId}`
     }
+
+
     const params = {
       TableName: process.env.TODOS_TABLE,
       Item:{
